@@ -13,7 +13,11 @@ import (
 func main() {
 	left, right := readInput()
 
+	fmt.Println("total distance between pairs: ")
 	fmt.Println(getTotalDistance(left, right))
+
+	fmt.Println("similarity score: ")
+	fmt.Println(getSimilarityScore(left, right))
 }
 
 func readInput() ([]int, []int) {
@@ -47,6 +51,22 @@ func getTotalDistance(left []int, right []int) int {
 	total := 0
 	for i := 0; i < len(left); i++ {
 		total += abs(left[i] - right[i])
+	}
+	return total
+}
+
+// Get similarity score by multiplying each # in left by # of occurrences in right, then totaling sum
+// naively just nesting these loops, if it causes a problem I will optimize.
+func getSimilarityScore(left []int, right []int) int {
+	total := 0
+	for i := 0; i < len(left); i++ {
+		count := 0
+		for j := 0; j < len(right); j++ {
+			if right[j] == left[i] {
+				count++
+			}
+		}
+		total += left[i] * count
 	}
 	return total
 }
