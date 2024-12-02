@@ -9,9 +9,40 @@ import (
 )
 
 func main() {
-	report := readInput()
+	report := [][]int{
+		{7, 6, 4, 2, 1},
+		{1, 2, 7, 8, 9},
+		{9, 7, 6, 2, 1},
+		{1, 3, 2, 4, 5},
+		{8, 6, 4, 4, 1},
+		{1, 3, 6, 7, 9},
+		{5, 4, 5, 6, 7, 8}, // works if first elem is removed (just direction) X
+		{1, 5, 6, 7, 8}, // works if first elem is removed (just gap) X
+		{4, 5, 6, 7, 8, 12}, // works if last elem is removed (just gap) :)
+		{4, 5, 6, 7, 8, 7}, // works if last elem is removed (just direction) :)
+	}
+	// report := readInput()
 	
 	fmt.Println(countSafeReports(report))
+	fmt.Println("safe reports counted^")
+	fmt.Println(countSafeReportsWithProblemDampener(report))
+	fmt.Println("safe reports with problem dampener counted^")
+}
+
+// Part 2 Solution
+
+// As we get to a failedRow, call a separate function with the row & the index it failed on
+func countSafeReportsWithProblemDampener(report [][]int) int {
+	safeRows := 0
+	for _, row := range report {
+		unsafeRowIndex := isRowSafe(row)
+		if unsafeRowIndex == -1 {
+			safeRows++
+		} else if isRowSafeWithProblemDampener(row, unsafeRowIndex) {
+			safeRows++
+		}
+	}
+	return safeRows
 }
 
 // Part 1 Solution
@@ -19,14 +50,36 @@ func main() {
 func countSafeReports(report [][]int) int {
 	safeRows := 0
 	for _, row := range report {
-		if isRowSafe(row) {
+		if isRowSafe(row) == -1 {
 			safeRows++
 		}
 	}
 	return safeRows
 }
 
-func isRowSafe(row []int) bool {
+// Start at failedIndex - 1, check if removing that element makes it safe
+// Check removing item at failedIndex & continue checking until we find a safe one or run out of items
+func isRowSafeWithProblemDampener(row []int, failedIndex int) bool {
+	// start by removing the failedIndex and getting the isRowSafe result. 
+	// if it's not safe, try removing the next index - stop at len-1
+	for i := failedIndex; i < len(row); i++ {
+		newRow := removeIndex(row, i)
+		if isRowSafe(newRow) == -1 {
+			return true
+		}
+	}
+	return false
+}
+
+func removeIndex(row []int, index int) []int {
+	if index == len(row)-1 {
+		return row[:index]
+	}
+	return append(row[:index], row[index+1:]...)
+}
+
+// For part 2 refactored to return an int: -1 if it's safe, otherwise the index where we failed.
+func isRowSafe(row []int) int {
 	// direction being true means ascending, false means descending
 	direction := row[1] > row[0]
 	// check left to right, if we change direction or see a gap >2 return false
@@ -35,11 +88,11 @@ func isRowSafe(row []int) bool {
 		newDirection := row[i] > prev
 		gap := abs(row[i] - prev)
 		if newDirection != direction || gap > 3 || gap == 0 { 
-			return false
+			return i
 		}
 	}
 
-	return true
+	return -1
 }
 
 func abs(x int) int {
