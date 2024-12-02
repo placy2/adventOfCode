@@ -9,19 +9,19 @@ import (
 )
 
 func main() {
-	report := [][]int{
-		{7, 6, 4, 2, 1},
-		{1, 2, 7, 8, 9},
-		{9, 7, 6, 2, 1},
-		{1, 3, 2, 4, 5},
-		{8, 6, 4, 4, 1},
-		{1, 3, 6, 7, 9},
-		{5, 4, 5, 6, 7, 8}, // works if first elem is removed (just direction) X
-		{1, 5, 6, 7, 8}, // works if first elem is removed (just gap) X
-		{4, 5, 6, 7, 8, 12}, // works if last elem is removed (just gap) :)
-		{4, 5, 6, 7, 8, 7}, // works if last elem is removed (just direction) :)
-	}
-	// report := readInput()
+	// report := [][]int{
+	// 	{7, 6, 4, 2, 1},
+	// 	{1, 2, 7, 8, 9},
+	// 	{9, 7, 6, 2, 1},
+	// 	{1, 3, 2, 4, 5},
+	// 	{8, 6, 4, 4, 1},
+	// 	{1, 3, 6, 7, 9},
+	// 	{5, 4, 5, 6, 7, 8}, // works if first elem is removed (just direction)
+	// 	{1, 5, 6, 7, 8}, // works if first elem is removed (just gap) 
+	// 	{4, 5, 6, 7, 8, 12}, // works if last elem is removed (just gap)
+	// 	{4, 5, 6, 7, 8, 7}, // works if last elem is removed (just direction)
+	// }
+	report := readInput()
 	
 	fmt.Println(countSafeReports(report))
 	fmt.Println("safe reports counted^")
@@ -62,7 +62,8 @@ func countSafeReports(report [][]int) int {
 func isRowSafeWithProblemDampener(row []int, failedIndex int) bool {
 	// start by removing the failedIndex and getting the isRowSafe result. 
 	// if it's not safe, try removing the next index - stop at len-1
-	for i := failedIndex; i < len(row); i++ {
+	// EDIT: START AT 0	- otherwise we miss the case where the first element is the problem, efficiency gain isn't worth it
+	for i := 0; i < len(row); i++ {
 		newRow := removeIndex(row, i)
 		if isRowSafe(newRow) == -1 {
 			return true
@@ -72,10 +73,15 @@ func isRowSafeWithProblemDampener(row []int, failedIndex int) bool {
 }
 
 func removeIndex(row []int, index int) []int {
-	if index == len(row)-1 {
-		return row[:index]
+	result := make([]int, len(row)-1)
+	count := 0
+	for i:= 0; i < len(row); i++ {
+		if i != index {
+			result[count] = row[i]
+			count++
+		}
 	}
-	return append(row[:index], row[index+1:]...)
+	return result
 }
 
 // For part 2 refactored to return an int: -1 if it's safe, otherwise the index where we failed.
