@@ -137,3 +137,6 @@ func readInput() ([][]int) {
 
 	return report
 }
+
+// TODO: REFACTOR CODEBASE TO BE A TEST SUITE AND I CAN RUN TESTS BY FILE
+// in each test file I can build up tests as I go (i.e. check on each line passing a certain test, TDD-ish)
