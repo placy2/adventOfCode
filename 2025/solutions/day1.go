@@ -10,12 +10,12 @@ import (
 func main() {
 	// Read input data - if efficiency is needed do processing in same pass
 	report := readInput()
-	
+
 	fmt.Println("Number of times passing position 0: ")
 	fmt.Println(countZeroes(report))
 }
 
-func readInput() ([]string) {
+func readInput() []string {
 	file, err := os.Open("../data/day1input.txt")
 	if err != nil {
 		panic(err)
@@ -58,38 +58,38 @@ func processTurn(instruction string, currentPos int, zeroCount int) (int, int) {
 	steps, _ := strconv.Atoi(instruction[1:])
 
 	// Check for > 100 steps
-	if steps / 100 > 0 {
+	if steps/100 > 0 {
 		zeroCount += steps / 100
 	}
 
 	// Modulus for circular array of 100 positions, can be done regardless
-	steps = steps % 100	
+	steps = steps % 100
 
 	var newPos int
-  var wrapped bool
+	var wrapped bool
 
-  if direction == 'L' {
-		newPos := currentPos - steps
+	if direction == 'L' {
+		newPos = currentPos - steps
 
 		if newPos < 0 {
-      // Wrap around
+			// Wrap around
 			newPos += 100
-      wrapped = true
+			wrapped = true
 		}
 	} else if direction == 'R' {
-		newPos := currentPos + steps
+		newPos = currentPos + steps
 
 		if newPos > 99 {
-      // Wrap around
+			// Wrap around
 			newPos -= 100
 			wrapped = true
 		}
 	}
 
-  // Only count wrap if we didn't start/end exactly on 0
-  if currentPos != 0 && newPos != 0 && wrapped {
-    zeroCount += 1
-  }
+	// Only count wrap if we didn't start/end exactly on 0
+	if currentPos != 0 && newPos != 0 && wrapped {
+		zeroCount += 1
+	}
 
 	return newPos, zeroCount
 }
