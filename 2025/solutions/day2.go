@@ -45,7 +45,7 @@ func sumFakesInRange(pair string) int {
 	total := 0
 	// loop through range
 	for i := lower; i <= upper; i++ {
-		if checkFakeIDPart1(strconv.Itoa(i)) {
+		if checkFakeIDPart2(strconv.Itoa(i)) {
 			total += i
 		}
 	}
@@ -70,6 +70,7 @@ func checkFakeIDPart2(id string) bool {
 
 func recurseCheck(id string, length int) bool {
 	// base case - length > len(id)/2
+	// anything longer cannot repeat at all
 	if length > len(id)/2 {
 		return false
 	}
