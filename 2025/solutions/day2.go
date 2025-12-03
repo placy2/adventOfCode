@@ -5,12 +5,19 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
+	start := time.Now()
 	pairs := readInput()
 
+	elapsedReading := time.Since(start)
+	fmt.Printf("Time taken to read input: %s\n", elapsedReading)
+
 	fmt.Printf("Sum of fake product IDs: %d\n", countFakes(pairs))
+	elapsedProcessing := time.Since(start) - elapsedReading
+	fmt.Printf("Time taken to process input: %s\n", elapsedProcessing)
 }
 
 // returns a slice of pairs like "11-22", "95-115", etc.
