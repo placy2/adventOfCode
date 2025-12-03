@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-	// Read input data - if efficiency is needed do processing in same pass
 	report := readInput()
 
 	fmt.Println("Total joltage rating:", calculateJoltageDifferences(report))
@@ -26,7 +25,6 @@ func readInput() []string {
 
 	for scanner.Scan() {
 		report = append(report, scanner.Text())
-		// Execute in-place processing here if needed
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -83,18 +81,15 @@ func calculateLineJoltageDifference2(line string) int {
 
 func compareAndShift(digits []byte, newDigit byte) []byte {
 	hasShifted := false
-	// for each digit compare as we did before, track if we have added new value or not
+	// for each digit compare as we did before, track if we have previously shifted to keep shifting once started
 	for i := 0; i < len(digits)-1; i++ {
-		// Check ordering of first 2
 		left := digits[i]
 		right := digits[i+1]
 
-		// if we need to shift left/right or already did
+		// if we need to shift or already did
 		if hasShifted || right > left {
-
 			// shift left
 			digits[i] = right
-
 			hasShifted = true
 		}
 	}
@@ -103,11 +98,9 @@ func compareAndShift(digits []byte, newDigit byte) []byte {
 	if hasShifted {
 		// need to add new digit to end for previous shift
 		digits[len(digits)-1] = newDigit
-		//digits = digits[:len(digits)-1] + string(newDigit)
 	} else if newDigit > digits[len(digits)-1] {
-		// shift left for larger new digit
+		// shift left for larger new digit at end
 		digits[len(digits)-1] = newDigit
-		// digits = digits[:len(digits)-1] + string(newDigit)
 	}
 	return digits
 }
