@@ -11,8 +11,8 @@ type Cell struct {
 
 func main() {
 	grid := readInput()
-	// result1 := solvePart1(grid)
-	// println("Part 1 result:", result1)
+	result1 := solvePart1(grid)
+	println("Part 1 result:", result1)
 	result2 := solvePart2(grid)
 	println("Part 2 result:", result2)
 }
