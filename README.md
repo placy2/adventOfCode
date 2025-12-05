@@ -12,13 +12,8 @@ To run this code yourself, sign up on the site yourself to get your own input da
 After ensuring the data is where the code expects, run the individual Go file with `go run` (i.e. `go run solutions/day1.go`).
 
 #### Using the runner (2025)
-Instead of having to run the specific day file for each of them, there is also a simple runner that you can use: 
+Instead of having to run the specific day file for each of them, there is also a simple runner that you can use. 
 
-Use the number of the day you want to run - it will run `solutions/day{n}.go`
-Ensure you are in `2025/runner` to run this.
-```console
-$ go run main.go 1
-Running solution for day 1...
-Output from day 1:
-...
-```
+While absolutely overkill, this is a small Web project using Gin for a bit of experimentation & learning along the way.
+
+See [the runner README for more details](2025/runner/README.md)
