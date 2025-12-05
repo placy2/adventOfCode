@@ -17,8 +17,8 @@ func main() {
 	ranges := sortAndCombineRanges(unorderedRanges)
 	result1 := solvePart1(ranges, ids)
 	println("Part 1 result:", result1)
-	// result2 := solvePart2(report)
-	// println("Part 2 result:", result2)
+	result2 := solvePart2(ranges)
+	println("Part 2 result:", result2)
 }
 
 // Returns two slices: one with the ranges and one with the ids
@@ -76,6 +76,15 @@ func solvePart1(ranges []Range, ids []int) int {
 	return total
 }
 
+func solvePart2(ranges []Range) int {
+	// count total covered numbers
+	total := 0
+	for _, r := range ranges {
+		total += r.end - r.start + 1
+	}
+	return total
+}
+
 func processRange(r string) Range {
 	var start, end int
 	fmt.Sscanf(r, "%d-%d", &start, &end)
@@ -83,10 +92,10 @@ func processRange(r string) Range {
 }
 
 func sortAndCombineRanges(ranges []Range) []Range {
-	fmt.Println("length of ranges before sorting and combining:", len(ranges))
+	//fmt.Println("length of ranges before sorting and combining:", len(ranges))
 	sorted := sortRanges(ranges)
 	combined := combineRanges(sorted)
-	fmt.Println("length of ranges after sorting and combining:", len(combined))
+	//fmt.Println("length of ranges after sorting and combining:", len(combined))
 	//fmt.Printf("combined ranges: %+v\n", combined)
 	return combined
 }
