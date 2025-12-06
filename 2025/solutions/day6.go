@@ -11,7 +11,9 @@ import (
 func main() {
 	report := readInput()
 	result1 := solvePart1(report)
-	fmt.Printf("Part 1 solution: %d", result1)
+	fmt.Printf("Part 1 solution: %d\n", result1)
+	result2 := solvePart2(report)
+	fmt.Printf("Part 2 solution: %d\n", result2)
 }
 
 func readInput() []string {
@@ -53,10 +55,46 @@ func solvePart1(report []string) int {
 		operator := operators[i]
 		for j := range operands {
 			columnOperands[j] = operands[j][i]
-			//fmt.Printf("added %s ", operands[j][i])
 		}
-		//fmt.Printf("going to perform math with: %s and %v with length %d\n", operator, columnOperands, len(columnOperands))
 		result += solveMath(operator, columnOperands)
+	}
+
+	return result
+}
+
+func solvePart2(report []string) int {
+	// turn each line except operators into rune array
+	operators := strings.Fields(report[len(report)-1])
+
+	fullLines := report[:len(report)-1]
+	// operands is one big char list (including whitespaces)
+	operands := make([][]rune, len(fullLines))
+	for i := range fullLines {
+		operands[i] = []rune(fullLines[i])
+	}
+
+	//Iterate from last index + keep operatorsIndex for simplicity
+	runeIndex := len(operands[0]) - 1
+	operatorIndex := len(operators) - 1
+	columnOperands := make([][]string, len(operators))
+	result := 0
+
+	for {
+		colStr := ""
+		for _, line := range operands {
+			colStr += string(line[runeIndex])
+		}
+		runeIndex -= 1
+		trimmedCol := strings.TrimSpace(colStr)
+		if trimmedCol == "" {
+			result += solveMath(operators[operatorIndex], columnOperands[operatorIndex])
+			operatorIndex -= 1
+		}
+		columnOperands[operatorIndex] = append(columnOperands[operatorIndex], trimmedCol)
+		if runeIndex < 0 {
+			result += solveMath(operators[operatorIndex], columnOperands[operatorIndex])
+			break
+		}
 	}
 
 	return result
