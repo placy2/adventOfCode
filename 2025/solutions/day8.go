@@ -22,8 +22,8 @@ func main() {
 	report := readInput()
 	result1 := solvePart1(report)
 	fmt.Printf("Part 1 solution: %d\n", result1)
-	// result2 := solvePart2(report)
-	// fmt.Printf("Part 2 solution: %d\n", result2)
+	result2 := solvePart2(report)
+	fmt.Printf("Part 2 solution: %d\n", result2)
 }
 
 func readInput() []Point {
@@ -51,10 +51,21 @@ func readInput() []Point {
 }
 
 func solvePart1(report []Point) int {
-	return makeConnections(report, 1000)
+	return makeConnections(report, false)
 }
 
-func makeConnections(report []Point, numConnections int) int {
+func solvePart2(report []Point) int {
+	return makeConnections(report, true)
+}
+
+// To avoid copy pasting all this, takes a boolean for part 2 logic
+// When false it uses 1000 connections and multiplies sizes of 3 largest circuits
+// When true it connects until all points are in a single circuit, then returns X coordinates of those two points multiplied
+func makeConnections(report []Point, isPart2 bool) int {
+	numConnections := 1000
+	if isPart2 {
+		numConnections = len(report) * (len(report) - 1) / 2 // max possible connections
+	}
 	// Create array of sorted index pairs, storing the distance squared from origin
 	sortedPairs := make([]IndexPair, 0, len(report))
 	uniquePairsMap := make(map[string]bool)
@@ -120,14 +131,32 @@ func makeConnections(report []Point, numConnections int) int {
 				if connectedCircuitI != -1 && connectedCircuitJ == -1 {
 					// Add point j to circuit of point i
 					circuits[connectedCircuitI] = append(circuits[connectedCircuitI], report[pair.j])
+					if isPart2 && len(circuits[connectedCircuitI]) == len(report) {
+						// All points are now connected, return product of X coordinates of first two points
+						fmt.Printf("All points connected in circuit of size %d\n", len(circuits[connectedCircuitI]))
+						return xCoordsProduct(report[pair.i], report[pair.j])
+					}
 				}
 				if connectedCircuitI == -1 && connectedCircuitJ != -1 {
 					// Add point i to circuit of point j
 					circuits[connectedCircuitJ] = append(circuits[connectedCircuitJ], report[pair.i])
+					if isPart2 && len(circuits[connectedCircuitJ]) == len(report) {
+						// All points are now connected, return product of X coordinates of first two points
+						fmt.Printf("All points connected in circuit of size %d\n", len(circuits[connectedCircuitJ]))
+						return xCoordsProduct(report[pair.i], report[pair.j])
+					}
 				}
 				if connectedCircuitI != -1 && connectedCircuitJ != -1 && connectedCircuitI != connectedCircuitJ {
 					// Combine circuits
 					circuits[connectedCircuitI] = append(circuits[connectedCircuitI], circuits[connectedCircuitJ]...)
+					fmt.Printf("Length of new circuit: %d\n", len(circuits[connectedCircuitI]))
+					fmt.Println()
+					// Check length of new circuit and return if part 2
+					if isPart2 && len(circuits[connectedCircuitI]) == len(report) {
+						// All points are now connected, return product of X coordinates of first two points
+						fmt.Printf("All points connected in circuit of size %d\n", len(circuits[connectedCircuitI]))
+						return xCoordsProduct(report[pair.i], report[pair.j])
+					}
 					// Remove circuit at connectedCircuitJ
 					circuits = append(circuits[:connectedCircuitJ], circuits[connectedCircuitJ+1:]...)
 				}
@@ -152,4 +181,8 @@ func makeConnections(report []Point, numConnections int) int {
 		result *= circuitSizes[i]
 	}
 	return result
+}
+
+func xCoordsProduct(p1, p2 Point) int {
+	return p1.x * p2.x
 }
